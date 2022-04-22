@@ -1,0 +1,2 @@
+#!/bin/bash
+whmapi1 create_user_session user=root service=whostmgrd locale=en | grep url

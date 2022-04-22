@@ -1,0 +1,2 @@
+#!/bin/bash
+sed -ri '/minpwstrength/s/[0-9]+/1/' /var/cpanel/cpanel.config

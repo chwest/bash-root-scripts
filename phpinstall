@@ -1,0 +1,28 @@
+#!/bin/bash
+function vpsphpinstall() {
+
+    if [[ "$1" == '-v' ]]; then
+        yum list ea-php{7,8}{0,1,2,3,4}* -q 2>/dev/null | grep -oP 'ea-php(7(2|3|4)|8(0|1))[-\w\d]*(?=\.)' | grep -v memcache | sort -u | sort -n -k 1.8,1.7 | pr -5 -t -w$(tput cols) -W$(tput cols)
+    else
+
+        i=1
+        packages_installed=$(yum list installed ea-php{7,8}{0,1,2,3,4}*x86_64 -q -e 0 2>/dev/null | grep -oP 'ea-php(7|8)(0|1|2|3|4)[-\w\d]*(?=\.)' | grep -v memcache | sort -u | sort -n -k 1.8,1.7 | wc -l)
+        packages_available=($(yum list ea-php{7,8}{0,1,2,3,4}*x86_64 -q -e 0 2>/dev/null | grep -oP 'ea-php(7|8)(0|1|2|3|4)[-\w\d]*(?=\.)' | grep -v memcache | sort -u | sort -n -k 1.8,1.7))
+        packages_total="${#packages_available[@]}"
+        totalnum=$(expr "$packages_total" - "$packages_installed")
+
+        for package in "${packages_available[@]}"; do
+
+            isinstalled=$(yum list installed "$package" -e 0 --quiet 2>/dev/null | awk '{print $1}' | grep -v 'Installed')
+
+            if [[ -z "$isinstalled" ]]; then
+                echo "[$i/$totalnum] Installing $package"
+                ((i++))
+                yum install "$package" -y -q -e 0 2>/dev/null 1>/dev/null
+            fi
+
+        done
+    fi
+}
+
+vpsphpinstall

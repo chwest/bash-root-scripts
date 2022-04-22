@@ -1,0 +1,5 @@
+#!/bin/bash
+function phplimits() {
+  clear; echo -e 'OLD PHP VALUES\nNEW PHP VALUES' | pr -t -2 -w 76  ; ( ls /opt/cpanel/ea-php*/root/etc/php.ini | while read x ; do echo -e "\n$x" ; grep -nP 'post_max_size =\K .+' "$x" ; grep -nP 'upload_max_filesize =\K .+' "$x" ; grep -nP 'memory_limit =\K .+' "$x" ; done ; echo ; ls /opt/cpanel/ea-php*/root/etc/php.ini | while read x ; do sed -ri '/post_max_size/s/[0-9]+/256/' "$x" ; sed -ri '/upload_max_filesize/s/[0-9]+/256/' "$x" ; sed -ri '/memory_limit/s/[0-9]+/512/' "$x" ; done ; ls /opt/cpanel/ea-php*/root/etc/php.ini | while read x ; do echo -e "\n$x" ; grep -nP 'post_max_size =\K .+' "$x" ; grep -nP 'upload_max_filesize =\K .+' "$x" ; grep -nP 'memory_limit =\K .+' "$x" ; done ; echo ) | pr -t -2 -w$(tput cols) -W$(tput cols) 
+}
+phplimits

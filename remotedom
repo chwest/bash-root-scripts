@@ -1,0 +1,2 @@
+#!/bin/bash
+whmapi1 set_tweaksetting key=allowremotedomains value=1
